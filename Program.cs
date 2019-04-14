@@ -16,6 +16,8 @@ namespace Vega
 				.AddEnvironmentVariables()
 				.AddJsonFile("certificate.json", optional: true, reloadOnChange: true)
 				.AddJsonFile($"certificate.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
+				.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+				.AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
 				.Build();
 
 			var certificateSettings = config.GetSection("certificateSettings");
