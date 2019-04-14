@@ -11,7 +11,6 @@ namespace Vega.Models
 		public string Name { get; set; }
 
 		public int MakeId { get; set; }
-
 		public Make Make { get; set; }
 	}
 }
