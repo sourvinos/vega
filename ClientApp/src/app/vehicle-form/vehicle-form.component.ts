@@ -1,6 +1,6 @@
+import { FeatureService } from './../services/feature.service';
 import { MakeService } from './../services/make.service';
 import { Component, OnInit } from '@angular/core';
-import { makeStateKey } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-vehicle-form',
@@ -15,13 +15,13 @@ export class VehicleFormComponent implements OnInit {
   vehicle = {
     make: null
   };
+  features: any;
 
-  constructor(private makeService: MakeService) { }
+  constructor(private makeService: MakeService, private featureService: FeatureService) { }
 
   ngOnInit() {
-    this.makeService.getMakes().subscribe(result => {
-      this.makes = result;
-    });
+    this.makeService.getMakes().subscribe(result => { this.makes = result; });
+    this.featureService.getFeatures().subscribe(result => this.features = result);
   }
 
   onMakeChange() {

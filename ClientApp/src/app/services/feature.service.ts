@@ -5,13 +5,13 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 
-export class MakeService {
+export class FeatureService {
 
-    private url: string = 'https://localhost:44322/api/makes';
+    private url: string = '/api/features';
 
     constructor(private http: HttpClient) { }
 
-    getMakes() {
+    getFeatures() {
         return this.http.get(this.url);
     }
 
