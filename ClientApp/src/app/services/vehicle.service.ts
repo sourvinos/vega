@@ -5,14 +5,16 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 
-export class FeatureService {
-
-    private url: string = '/api/features';
+export class VehicleService {
 
     constructor(private http: HttpClient) { }
 
+    getMakes() {
+        return this.http.get('/api/makes');
+    }
+
     getFeatures() {
-        return this.http.get(this.url);
+        return this.http.get('/api/features');
     }
 
 }
