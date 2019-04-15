@@ -18,12 +18,42 @@
         </select>
     </div>
 
+    <p>Is this vehicle registered?</p>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" value="true" id="registered" name="registered">
+        <label class="form-check-label" for="registered">Yes</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" value="false" id="notRegistered" name="registered">
+        <label class="form-check-label" for="notRegistered">No</label>
+    </div>
+
     <h2>Features</h2>
 
-    <div *ngFor="let feature of features" class="checkbox">
-        <label for="feature{{ feature.id }}">
-            <input type="checkbox" id="feature{{ feature.id }}"> {{ feature.name }}
+    <div *ngFor="let feature of features" class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="feature{{ feature.id }}">
+        <label class="form-check-label" for="feature{{ feature.id }}">
+            {{ feature.name }}
         </label>
     </div>
+
+    <h2>Contact</h2>
+
+    <div class="form-group">
+        <label for="contactName">Name</label>
+        <input type="text" id="contactName" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label for="contactEmail">Email</label>
+        <input type="text" id="contactEmail" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label for="contactPhone">Phone</label>
+        <input type="text" id="contactPhone" class="form-control">
+    </div>
+
+    <button class="btn btn-primary">Save</button>
 
 </form>
