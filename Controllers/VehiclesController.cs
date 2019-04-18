@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,11 +23,27 @@ namespace Vega.Controllers
 			this.mapper = mapper;
 		}
 
+		// GET: api/vehicles
+		[HttpGet]
+		public async Task<IEnumerable<VehicleResource>> Get()
+		{
+			var vehicles = await context.Vehicles.Include(x => x.Features).ToListAsync();
+
+			return mapper.Map<List<Vehicle>, List<VehicleResource>>(vehicles);
+		}
+
 		// POST: api/vehicles
 		[HttpPost]
-		public IActionResult Create([FromBody] VehicleResource vehicleResource)
+		public async Task<IActionResult> Create([FromBody] VehicleResource vehicleResource)
 		{
-			var vehicle = mapper.Map<VehicleResource, Vehicle>(vehicleResource);
+			var item = mapper.Map<VehicleResource, Vehicle>(vehicleResource);
+
+			item.LastUpdate = DateTime.Now;
+
+			context.Vehicles.Add(item);
+			await context.SaveChangesAsync();
+
+			var vehicle = mapper.Map<Vehicle, VehicleResource>(item);
 
 			return Ok(vehicle);
 		}

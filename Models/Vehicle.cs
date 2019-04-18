@@ -4,7 +4,7 @@ using Vega.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Vega
+namespace Vega.Models
 {
 	public class Vehicle
 	{

@@ -1,4 +1,4 @@
-namespace Vega
+namespace Vega.Resources
 {
 	public class FeatureResource
 	{
