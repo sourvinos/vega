@@ -25,27 +25,80 @@ namespace Vega.Controllers
 
 		// GET: api/vehicles
 		[HttpGet]
-		public async Task<IEnumerable<VehicleResource>> Get()
+		public async Task<ActionResult<IEnumerable<VehicleResource>>> Get()
 		{
 			var vehicles = await context.Vehicles.Include(x => x.Features).ToListAsync();
 
 			return mapper.Map<List<Vehicle>, List<VehicleResource>>(vehicles);
 		}
 
+		// GET: api/vehicles/1
+		[HttpGet("{id}")]
+		public async Task<ActionResult<VehicleResource>> GetOne(int id)
+		{
+			var item = await context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+
+			if (item == null) return NotFound();
+
+			var vehicle = mapper.Map<Vehicle, VehicleResource>(item);
+
+			return Ok(vehicle);
+		}
+
 		// POST: api/vehicles
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] VehicleResource vehicleResource)
+		public async Task<ActionResult> Create([FromBody] VehicleResource vehicleResource)
 		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+
 			var item = mapper.Map<VehicleResource, Vehicle>(vehicleResource);
 
 			item.LastUpdate = DateTime.Now;
 
 			context.Vehicles.Add(item);
+
 			await context.SaveChangesAsync();
 
 			var vehicle = mapper.Map<Vehicle, VehicleResource>(item);
 
 			return Ok(vehicle);
 		}
+
+		// PUT: api/vehicles/1
+		[HttpPut("{id}")]
+		public async Task<IActionResult> Update(int id, [FromBody] VehicleResource vehicleResource)
+		{
+			if (!ModelState.IsValid) return BadRequest(ModelState);
+
+			var item = await context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+
+			if (item == null) return NotFound();
+
+			mapper.Map<VehicleResource, Vehicle>(vehicleResource, item);
+
+			item.LastUpdate = DateTime.Now;
+
+			await context.SaveChangesAsync();
+
+			var vehicle = mapper.Map<Vehicle, VehicleResource>(item);
+
+			return Ok(vehicle);
+		}
+
+		// DELETE: api/vehicles/1
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> Delete(int id)
+		{
+			var item = await context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+
+			if (item == null) return NotFound();
+
+			context.Vehicles.Remove(item);
+
+			await context.SaveChangesAsync();
+
+			return Ok(id);
+		}
+
 	}
 }

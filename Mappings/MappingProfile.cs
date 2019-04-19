@@ -9,6 +9,7 @@ namespace Vega.Mappings
 	{
 		public MappingProfile()
 		{
+			// From Domain To API
 			CreateMap<Make, MakeResource>();
 			CreateMap<Model, ModelResource>();
 			CreateMap<Feature, FeatureResource>();
@@ -16,11 +17,30 @@ namespace Vega.Mappings
 				.ForMember(vr => vr.Contact, opt => opt.MapFrom(v => new ContactResource { Name = v.ContactName, Email = v.ContactEmail, Phone = v.ContactPhone }))
 				.ForMember(vr => vr.Features, opt => opt.MapFrom(v => v.Features.Select(vf => vf.FeatureId)));
 
+			// From API To Domain
 			CreateMap<VehicleResource, Vehicle>()
+				.ForMember(v => v.Id, opt => opt.Ignore())
 				.ForMember(v => v.ContactName, opt => opt.MapFrom(vr => vr.Contact.Name))
 				.ForMember(v => v.ContactEmail, opt => opt.MapFrom(vr => vr.Contact.Email))
 				.ForMember(v => v.ContactPhone, opt => opt.MapFrom(vr => vr.Contact.Phone))
-				.ForMember(v => v.Features, opt => opt.MapFrom(vr => vr.Features.Select(id => new VehicleFeature { FeatureId = id })));
+				.ForMember(v => v.Features, opt => opt.MapFrom(vr => vr.Features.Select(id => new VehicleFeature { FeatureId = id })))
+				.AfterMap((vr, v) =>
+				{
+					// Find and store the features in the Domain that are not in the API
+					var removedFeatures = v.Features.Where(x => !vr.Features.Contains(x.FeatureId));
+					// Remove the features from the Domain
+					foreach (var x in removedFeatures)
+						v.Features.Remove(x);
+
+					// Find and store the features in the API that are not in the Domain
+					var addedFeatures = vr.Features.Where(id => !v.Features.Any(x => x.FeatureId == id));
+					// Add the new features in the Domain
+					foreach (var x in addedFeatures)
+						v.Features.Add(new VehicleFeature
+						{
+							FeatureId = x
+						});
+				});
 		}
 	}
 }
