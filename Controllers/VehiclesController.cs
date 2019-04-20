@@ -36,7 +36,12 @@ namespace Vega.Controllers
 		[HttpGet("{id}")]
 		public async Task<ActionResult<VehicleResource>> GetOne(int id)
 		{
-			var item = await context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+			var item = await context.Vehicles
+				.Include(v => v.Features)
+					.ThenInclude(vf => vf.Feature)
+				.Include(v => v.Model)
+					.ThenInclude(m => m.Make)
+				.SingleOrDefaultAsync(v => v.Id == id);
 
 			if (item == null) return NotFound();
 
@@ -47,11 +52,11 @@ namespace Vega.Controllers
 
 		// POST: api/vehicles
 		[HttpPost]
-		public async Task<ActionResult> Create([FromBody] VehicleResource vehicleResource)
+		public async Task<ActionResult> Create([FromBody] SaveVehicleResource vehicleResource)
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
 
-			var item = mapper.Map<VehicleResource, Vehicle>(vehicleResource);
+			var item = mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
 
 			item.LastUpdate = DateTime.Now;
 
@@ -59,7 +64,7 @@ namespace Vega.Controllers
 
 			await context.SaveChangesAsync();
 
-			var vehicle = mapper.Map<Vehicle, VehicleResource>(item);
+			var vehicle = mapper.Map<Vehicle, SaveVehicleResource>(item);
 
 			return Ok(vehicle);
 		}
