@@ -1,5 +1,5 @@
-import { VehicleService } from './../services/vehicle.service';
 import { Component, OnInit } from '@angular/core';
+import { VehicleService } from './../services/vehicle.service';
 
 @Component({
   selector: 'app-vehicle-form',
@@ -11,8 +11,10 @@ export class VehicleFormComponent implements OnInit {
 
   makes: any;
   models: any;
-  vehicle = { make: null };
   features: any;
+  vehicle: any = {
+    features: []
+  }
 
   constructor(private vehicleService: VehicleService) { }
 
@@ -22,8 +24,20 @@ export class VehicleFormComponent implements OnInit {
   }
 
   onMakeChange() {
-    let selectedMake = this.makes.find((model: { id: any; }) => model.id == this.vehicle.make);
-    this.models = selectedMake.models;
+    let selectedMake = this.makes.find((x: { id: any; }) => x.id == this.vehicle.makeId);
+    this.models = selectedMake ? selectedMake.models : [];
+    delete this.vehicle.modelId;
+  }
+
+  onFeatureToggle(featureId, $event) {
+    if ($event.target.checked) {
+      this.vehicle.features.push(featureId)
+    } else {
+      let index = this.vehicle.features.indexOf(featureId);
+      console.log("Delete: " + index);
+      this.vehicle.features.splice(index, 1);
+    }
+
   }
 
 }
