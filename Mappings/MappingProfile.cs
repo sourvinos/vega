@@ -1,4 +1,5 @@
 using AutoMapper;
+using System.Collections.Generic;
 using System.Linq;
 using Vega.Models;
 using Vega.Resources;

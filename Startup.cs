@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Vega.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Vega.Interfaces;
+using Vega.Data;
 
 namespace Vega
 {
@@ -23,13 +25,14 @@ namespace Vega
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.Configure<CookiePolicyOptions>(options => { options.CheckConsentNeeded = context => true; options.MinimumSameSitePolicy = SameSiteMode.None; });
-
+			services.AddAntiforgery(options => { options.Cookie.Name = "_af"; options.Cookie.HttpOnly = true; options.Cookie.SecurePolicy = CookieSecurePolicy.Always; options.HeaderName = "X-XSRF-TOKEN"; });
 			services.AddAutoMapper();
 			services.AddDbContext<VegaDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("SqliteConnection")));
 			services.AddMvc(options => { options.SslPort = 44322; options.Filters.Add(new RequireHttpsAttribute()); });
-			services.AddAntiforgery(options => { options.Cookie.Name = "_af"; options.Cookie.HttpOnly = true; options.Cookie.SecurePolicy = CookieSecurePolicy.Always; options.HeaderName = "X-XSRF-TOKEN"; });
+			services.AddScoped<IUnitOfWork, UnitOfWork>();
+			services.AddScoped<IVehicleRepository, VehicleRepository>();
 			services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
+			services.Configure<CookiePolicyOptions>(options => { options.CheckConsentNeeded = context => true; options.MinimumSameSitePolicy = SameSiteMode.None; });
 		}
 
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env)

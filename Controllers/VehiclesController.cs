@@ -2,46 +2,35 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System;
 using Vega.Models;
 using Vega.Resources;
+using Vega.Interfaces;
 
 namespace Vega.Controllers
 {
 	[Route("api/[controller]")]
 	public class VehiclesController : Controller
 	{
-		private readonly VegaDbContext context;
 		private readonly IMapper mapper;
+		private readonly IVehicleRepository vehicleRepository;
+		private readonly IUnitOfWork unitOfWork;
 
-		public VehiclesController(VegaDbContext context, IMapper mapper)
+		public VehiclesController(IMapper mapper, IVehicleRepository vehicleRepository, IUnitOfWork unitOfWork)
 		{
-			this.context = context;
 			this.mapper = mapper;
-		}
-
-		// GET: api/vehicles
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<VehicleResource>>> Get()
-		{
-			var vehicles = await context.Vehicles.Include(x => x.Features).ToListAsync();
-
-			return mapper.Map<List<Vehicle>, List<VehicleResource>>(vehicles);
+			this.vehicleRepository = vehicleRepository;
+			this.unitOfWork = unitOfWork;
 		}
 
 		// GET: api/vehicles/1
 		[HttpGet("{id}")]
 		public async Task<ActionResult<VehicleResource>> GetOne(int id)
 		{
-			var item = await context.Vehicles
-				.Include(v => v.Features)
-					.ThenInclude(vf => vf.Feature)
-				.Include(v => v.Model)
-					.ThenInclude(m => m.Make)
-				.SingleOrDefaultAsync(v => v.Id == id);
+			var item = await vehicleRepository.GetVehicle(id);
 
 			if (item == null) return NotFound();
 
@@ -56,54 +45,59 @@ namespace Vega.Controllers
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
 
-			var item = mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
+			var vehicle = mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
 
-			item.LastUpdate = DateTime.Now;
+			vehicle.LastUpdate = DateTime.Now;
 
-			context.Vehicles.Add(item);
+			vehicleRepository.AddVehicle(vehicle);
 
-			await context.SaveChangesAsync();
+			await unitOfWork.Complete();
 
-			var vehicle = mapper.Map<Vehicle, SaveVehicleResource>(item);
+			var item = await vehicleRepository.GetVehicle(vehicle.Id);
 
-			return Ok(vehicle);
+			var result = mapper.Map<Vehicle, VehicleResource>(item);
+
+			return Ok(result);
 		}
 
 		// PUT: api/vehicles/1
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Update(int id, [FromBody] VehicleResource vehicleResource)
+		public async Task<IActionResult> Update(int id, [FromBody] SaveVehicleResource vehicleResource)
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
 
-			var item = await context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+			var vehicle = await vehicleRepository.GetVehicle(vehicleResource.Id);
 
-			if (item == null) return NotFound();
+			if (vehicle == null) return NotFound();
 
-			mapper.Map<VehicleResource, Vehicle>(vehicleResource, item);
+			mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource, vehicle);
 
-			item.LastUpdate = DateTime.Now;
+			vehicle.LastUpdate = DateTime.Now;
 
-			await context.SaveChangesAsync();
+			vehicleRepository.UpdateVehicle(vehicle);
 
-			var vehicle = mapper.Map<Vehicle, VehicleResource>(item);
+			await unitOfWork.Complete();
 
-			return Ok(vehicle);
+			var item = await vehicleRepository.GetVehicle(vehicle.Id);
+
+			var result = mapper.Map<Vehicle, VehicleResource>(item);
+
+			return Ok(result);
 		}
 
 		// DELETE: api/vehicles/1
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(int id)
 		{
-			var item = await context.Vehicles.Include(v => v.Features).SingleOrDefaultAsync(v => v.Id == id);
+			var vehicle = await vehicleRepository.GetVehicle(id, includeRelated: false);
 
-			if (item == null) return NotFound();
+			if (vehicle == null) return NotFound();
 
-			context.Vehicles.Remove(item);
+			vehicleRepository.DeleteVehicle(vehicle);
 
-			await context.SaveChangesAsync();
+			await unitOfWork.Complete();
 
 			return Ok(id);
 		}
-
 	}
 }
