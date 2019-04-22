@@ -11,6 +11,7 @@
         ],
         "moduleResolution": "node",
         "noImplicitAny": false,
+        "strictNullChecks": false,
         "outDir": "./dist/out-tsc",
         "sourceMap": true,
         "target": "es5",

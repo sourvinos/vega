@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 
 namespace Vega.Resources
 {
-	// Will be used for reading
 	public class VehicleResource
 	{
 		public int Id { get; set; }
