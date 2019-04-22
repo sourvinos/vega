@@ -51,12 +51,7 @@ export class VehicleFormComponent implements OnInit {
     onSubmit() {
         this.vehicleService
             .create(this.vehicle)
-            .subscribe(result => {
-                console.log(result);
-                this.toastr.success('Vehicle saved!');
-            }, err => {
-                this.toastr.error('Vehicle not saved!');
-            });
+            .subscribe(result => console.log(result));
     }
 
 }
