@@ -1,6 +1,6 @@
 <form #form="ngForm" (ngSubmit)="onSubmit()" autocomplete="off" novalidate>
 
-    <h1>New vehicles!</h1>
+    <h1>New vehicle</h1>
 
     <p>{{ vehicle | json }}</p>
 
@@ -60,7 +60,6 @@
         <input type="text" id="contactPhone" class="form-control" name="contactPhone" [(ngModel)]="vehicle.contact.phone">
     </div>
 
-    <button class="btn btn-primary">Save</button>
-    <!-- <button class="btn btn-primary" [class.disabled]="!form.valid">Save</button> -->
+    <button class="btn btn-primary" [class.disabled]="!form.valid">Save</button>
 
 </form>

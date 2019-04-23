@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
 import { VehicleService } from './../services/vehicle.service';
 
 @Component({
@@ -25,7 +24,7 @@ export class VehicleFormComponent implements OnInit {
         }
     };
 
-    constructor(private vehicleService: VehicleService, private toastr: ToastrService) { }
+    constructor(private vehicleService: VehicleService) { }
 
     ngOnInit() {
         this.vehicleService.getMakes().subscribe(result => this.makes = result);
@@ -51,7 +50,7 @@ export class VehicleFormComponent implements OnInit {
     onSubmit() {
         this.vehicleService
             .create(this.vehicle)
-            .subscribe(result => console.log(result));
+            .subscribe(result => result);
     }
 
 }

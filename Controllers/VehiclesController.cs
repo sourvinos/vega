@@ -43,7 +43,7 @@ namespace Vega.Controllers
 		[HttpPost]
 		public async Task<ActionResult> Create([FromBody] SaveVehicleResource vehicleResource)
 		{
-			if (ModelState.IsValid) return BadRequest(ModelState);
+			if (!ModelState.IsValid) return BadRequest(ModelState);
 
 			var vehicle = mapper.Map<SaveVehicleResource, Vehicle>(vehicleResource);
 
