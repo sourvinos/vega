@@ -21,4 +21,8 @@ export class VehicleService {
         return this.http.post('/api/vehicles', vehicle);
     }
 
+    get(id: number) {
+        return this.http.get('/api/vehicles/' + id);
+    }
+
 }

@@ -9,7 +9,7 @@ export class AppErrorHandler implements ErrorHandler {
 
 	handleError(error: any): void {
 		this.ngZone.run(() => {
-			this.toastr.error('An error occured');
+			this.toastr.error('An error occured while communicating with the server ');
 		});
 	}
 }
