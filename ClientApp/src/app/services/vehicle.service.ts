@@ -17,11 +17,11 @@ export class VehicleService {
         return this.http.get('/api/features');
     }
 
-    create(vehicle: any) {
+    createVehicle(vehicle: any) {
         return this.http.post('/api/vehicles', vehicle);
     }
 
-    get(id: number) {
+    getVehicle(id: number) {
         return this.http.get('/api/vehicles/' + id);
     }
 

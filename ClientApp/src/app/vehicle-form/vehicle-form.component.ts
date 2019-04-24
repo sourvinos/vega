@@ -1,6 +1,6 @@
+import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { VehicleService } from './../services/vehicle.service';
-import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -34,11 +34,17 @@ export class VehicleFormComponent implements OnInit {
         let sources = [this.vehicleService.getMakes(), this.vehicleService.getFeatures()];
 
         if (this.vehicle.id) {
-            sources.push(this.vehicleService.get(this.vehicle.id));
+            sources.push(this.vehicleService.getVehicle(this.vehicle.id));
         }
 
         return forkJoin(sources).subscribe(result => {
-            this.makes = result[0], this.features = result[1], this.vehicle = result[2]
+            this.makes = result[0],
+                this.features = result[1],
+                this.vehicle = result[2]
+        }, error => {
+            if (error.status == 404) {
+                this.router.navigate(['/error'])
+            }
         });
     }
 
@@ -60,7 +66,7 @@ export class VehicleFormComponent implements OnInit {
 
     onSubmit() {
         this.vehicleService
-            .create(this.vehicle)
+            .createVehicle(this.vehicle)
             .subscribe(result => result);
     }
 
