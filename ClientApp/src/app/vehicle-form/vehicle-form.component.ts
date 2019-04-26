@@ -6,6 +6,7 @@ import { SaveVehicle } from '../models/savevehicle'
 import { Vehicle } from './../models/vehicle'
 import { VehicleService } from './../services/vehicle.service'
 import { forkJoin } from 'rxjs'
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-vehicle-form',
@@ -25,18 +26,17 @@ export class VehicleFormComponent implements OnInit {
         modelId: 0,
         isRegistered: false,
         features: [],
-        contact: { name: '', email: '', phone: '' },
+        contact: { name: '', email: '', phone: '' }
     }
 
-    constructor(private route: ActivatedRoute, private router: Router, private vehicleService: VehicleService) {
-        route.params.subscribe(p => (this.vehicle.id = +p['id']))
+    constructor(private route: ActivatedRoute, private router: Router, private vehicleService: VehicleService, private toastr: ToastrService) {
+        route.params.subscribe(p => (this.vehicle.id = p['id']))
     }
 
     ngOnInit() {
         let sources = [
             this.vehicleService.getMakes(),
-            this.vehicleService.getFeatures(),
-        ]
+            this.vehicleService.getFeatures()]
 
         if (this.vehicle.id) {
             sources.push(this.vehicleService.getVehicle(this.vehicle.id))
@@ -68,9 +68,7 @@ export class VehicleFormComponent implements OnInit {
     }
 
     private populateModels() {
-        const selectedMake = this.makes.find(
-            (x: { id: any }) => x.id == this.vehicle.makeId
-        )
+        const selectedMake = this.makes.find((x: { id: any }) => x.id == this.vehicle.makeId)
         this.models = selectedMake ? selectedMake.models : []
     }
 
@@ -93,14 +91,19 @@ export class VehicleFormComponent implements OnInit {
             this.vehicle.features.push(featureId)
         } else {
             const index = this.vehicle.features.indexOf(featureId)
-            console.log('Delete: ' + index)
             this.vehicle.features.splice(index, 1)
         }
     }
 
-    onSubmit() {
-        this.vehicleService
-            .createVehicle(this.vehicle)
-            .subscribe(result => result)
+    submit() {
+        if (this.vehicle.id) {
+            this.vehicleService.updateVehicle(this.vehicle).subscribe(result => {
+                this.toastr.info('Vehicle updated');
+            });
+        } else {
+            this.vehicleService.createVehicle(this.vehicle).subscribe(result => {
+                this.toastr.success('Vehicle created');
+            });
+        }
     }
 }

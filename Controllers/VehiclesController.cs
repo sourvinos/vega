@@ -41,7 +41,7 @@ namespace Vega.Controllers
 
 		// POST: api/vehicles
 		[HttpPost]
-		public async Task<ActionResult> Create([FromBody] SaveVehicleResource vehicleResource)
+		public async Task<IActionResult> Create([FromBody] SaveVehicleResource vehicleResource)
 		{
 			if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -64,7 +64,7 @@ namespace Vega.Controllers
 		[HttpPut("{id}")]
 		public async Task<IActionResult> Update(int id, [FromBody] SaveVehicleResource vehicleResource)
 		{
-			if (ModelState.IsValid) return BadRequest(ModelState);
+			if (!ModelState.IsValid) return BadRequest(ModelState);
 
 			var vehicle = await vehicleRepository.GetVehicle(vehicleResource.Id);
 

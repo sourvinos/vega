@@ -1,4 +1,4 @@
-<form #form="ngForm" (ngSubmit)="onSubmit()" autocomplete="off" novalidate>
+<form #form="ngForm" (ngSubmit)="submit()" autocomplete="off" novalidate>
 
     <h1>New vehicle</h1>
 
@@ -43,21 +43,21 @@
     <h3>Contact</h3>
     <div class="form-group">
         <label for="contactName">Name</label>
-        <input type="text" id="contactName" class="form-control" name="contactName" [(ngModel)]="vehicle.contact.name" #contactName="ngModel" required>
+        <input type="text" id="contactName" class="form-control" name="contactName" [(ngModel)]="vehicle.contact.name" #contactName="ngModel">
         <small class="text-danger" *ngIf="contactName.touched && !contactName.valid">This field is required</small>
     </div>
 
     <div class="form-group">
         <label for="contactEmail">Email</label>
-        <input type="text" id="contactEmail" class="form-control" name="contactEmail" [(ngModel)]="vehicle.contact.email" #contactEmail="ngModel" required>
+        <input type="text" id="contactEmail" class="form-control" name="contactEmail" [(ngModel)]="vehicle.contact.email" #contactEmail="ngModel">
         <small class="text-danger" *ngIf="contactEmail.touched && !contactEmail.valid">This field is required</small>
     </div>
 
     <div class="form-group">
         <label for="contactPhone">Phone</label>
-        <input type="text" id="contactPhone" class="form-control" name="contactPhone" [(ngModel)]="vehicle.contact.phone">
+        <input type="text" id="contactPhone" class="form-control" name="contactPhone" [(ngModel)]="vehicle.contact.phone" #contactPhone="ngModel">
     </div>
 
-    <button class="btn btn-primary" [class.disabled]="!form.valid">Save</button>
+    <button class="btn btn-primary">Save</button>
 
 </form>
