@@ -6,7 +6,8 @@ import { SaveVehicle } from '../models/savevehicle'
 import { Vehicle } from './../models/vehicle'
 import { VehicleService } from './../services/vehicle.service'
 import { forkJoin } from 'rxjs'
-import { ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr'
+import { routerNgProbeToken } from '@angular/router/src/router_module';
 
 @Component({
     selector: 'app-vehicle-form',
@@ -21,9 +22,9 @@ export class VehicleFormComponent implements OnInit {
     features: any
 
     vehicle: SaveVehicle = {
-        id: 0,
-        makeId: 0,
-        modelId: 0,
+        id: null,
+        makeId: null,
+        modelId: null,
         isRegistered: false,
         features: [],
         contact: { name: '', email: '', phone: '' }
@@ -53,7 +54,7 @@ export class VehicleFormComponent implements OnInit {
                         model: KeyValuePair
                         isRegistered: boolean
                         features: []
-                        contact: { name: string; email: string; phone: string }
+                        contact: { name: string, email: string, phone: string }
                         lastUpdate: string
                     })
                     this.populateModels()
@@ -98,12 +99,23 @@ export class VehicleFormComponent implements OnInit {
     submit() {
         if (this.vehicle.id) {
             this.vehicleService.updateVehicle(this.vehicle).subscribe(result => {
-                this.toastr.info('Vehicle updated');
-            });
+                this.toastr.info('Vehicle updated')
+                this.router.navigate(['/'])
+            })
         } else {
             this.vehicleService.createVehicle(this.vehicle).subscribe(result => {
-                this.toastr.success('Vehicle created');
-            });
+                this.toastr.info('Vehicle created')
+                this.router.navigate(['/'])
+            })
+        }
+    }
+
+    delete() {
+        if (confirm("Are you sure?")) {
+            this.vehicleService.deleteVehicle(this.vehicle.id).subscribe(result => {
+                this.toastr.warning('Vehicle deleted')
+                this.router.navigate(['/'])
+            })
         }
     }
 }

@@ -30,4 +30,8 @@ export class VehicleService {
         return this.http.put('/api/vehicles/' + vehicle.id, vehicle);
     }
 
+    deleteVehicle(id: number) {
+        return this.http.delete('/api/vehicles/' + id);
+    }
+
 }
