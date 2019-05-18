@@ -17,16 +17,16 @@ namespace Vega.Data
 			this.context = context;
 		}
 
+		public async Task<IEnumerable<Vehicle>> GetVehicles(bool includeRelated = true)
+		{
+			return await context.Vehicles.Include(v => v.Features).ThenInclude(vf => vf.Feature).Include(v => v.Model).ThenInclude(m => m.Make).AsNoTracking().ToListAsync();
+		}
+
 		public async Task<Vehicle> GetVehicle(int id, bool includeRelated = true)
 		{
 			if (!includeRelated) return await context.Vehicles.SingleAsync(v => v.Id == id);
 
-			return await context.Vehicles
-				.Include(v => v.Features)
-					.ThenInclude(vf => vf.Feature)
-				.Include(v => v.Model)
-					.ThenInclude(m => m.Make)
-				.SingleOrDefaultAsync(v => v.Id == id);
+			return await context.Vehicles.Include(v => v.Features).ThenInclude(vf => vf.Feature).Include(v => v.Model).ThenInclude(m => m.Make).SingleOrDefaultAsync(v => v.Id == id);
 		}
 
 		public void AddVehicle(Vehicle vehicle)
@@ -45,5 +45,6 @@ namespace Vega.Data
 
 			await context.SaveChangesAsync();
 		}
+
 	}
 }

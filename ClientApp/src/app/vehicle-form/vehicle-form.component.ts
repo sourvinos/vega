@@ -7,7 +7,6 @@ import { Vehicle } from './../models/vehicle'
 import { VehicleService } from './../services/vehicle.service'
 import { forkJoin } from 'rxjs'
 import { ToastrService } from 'ngx-toastr'
-import { routerNgProbeToken } from '@angular/router/src/router_module';
 
 @Component({
     selector: 'app-vehicle-form',

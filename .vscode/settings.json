@@ -1,0 +1,10 @@
+{
+	"sqltools.connections": [
+		{
+			"connectString": "Server=localhost; database=testdb;user id=sa; password=Ncc74656",
+			"connectionTimeout": 30,
+			"dialect": "MSSQL",
+			"name": "SqlServerConnection"
+		}
+	]
+}

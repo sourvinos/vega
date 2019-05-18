@@ -26,6 +26,15 @@ namespace Vega.Controllers
 			this.unitOfWork = unitOfWork;
 		}
 
+		// GET: api/vehicles
+		[HttpGet]
+		public async Task<IEnumerable<VehicleResource>> Get()
+		{
+			var items = await vehicleRepository.GetVehicles();
+
+			return mapper.Map<IEnumerable<Vehicle>, IEnumerable<VehicleResource>>(items);
+		}
+
 		// GET: api/vehicles/1
 		[HttpGet("{id}")]
 		public async Task<ActionResult<VehicleResource>> GetOne(int id)

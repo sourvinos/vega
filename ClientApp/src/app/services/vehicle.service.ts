@@ -18,6 +18,10 @@ export class VehicleService {
         return this.http.get('/api/features');
     }
 
+    getVehicles() {
+        return this.http.get('/api/vehicles/');
+    }
+
     getVehicle(id: number) {
         return this.http.get('/api/vehicles/' + id);
     }

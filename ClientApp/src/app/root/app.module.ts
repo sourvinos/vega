@@ -6,21 +6,23 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ToastrModule } from 'ngx-toastr';
-import { VehicleFormComponent } from './../vehicle-form/vehicle-form.component';
-import { AppComponent } from './app.component';
 
-import { NavMenuComponent } from '../nav-menu/nav-menu.component';
-import { HomeComponent } from '../home/home.component';
+import { AppComponent } from './app.component';
 import { AppErrorHandler } from './app.error-handler';
 import { ErrorComponent } from '../error/error.component';
+import { HomeComponent } from '../home/home.component';
+import { NavMenuComponent } from '../nav-menu/nav-menu.component';
+import { VehicleFormComponent } from './../vehicle-form/vehicle-form.component';
+import { VehicleListComponent } from './../vehicle-list/vehicle-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    ErrorComponent,
     HomeComponent,
     NavMenuComponent,
     VehicleFormComponent,
-    ErrorComponent
+    VehicleListComponent
   ],
   imports: [
     CommonModule,
@@ -33,6 +35,7 @@ import { ErrorComponent } from '../error/error.component';
     ),
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: 'vehicles', component: VehicleListComponent },
       { path: 'vehicles/new', component: VehicleFormComponent },
       { path: 'vehicles/:id', component: VehicleFormComponent },
       { path: 'error', component: ErrorComponent },
