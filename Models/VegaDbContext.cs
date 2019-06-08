@@ -10,8 +10,6 @@ namespace Vega.Models
 		public DbSet<VehicleFeature> VehicleFeatures { get; set; }
 		public DbSet<Feature> Features { get; set; }
 
-		public DbSet<Inventory> Inventory { get; set; }
-
 		public VegaDbContext(DbContextOptions<VegaDbContext> options) : base(options) { }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)

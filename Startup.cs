@@ -27,8 +27,8 @@ namespace Vega
 		{
 			services.AddAntiforgery(options => { options.Cookie.Name = "_af"; options.Cookie.HttpOnly = true; options.Cookie.SecurePolicy = CookieSecurePolicy.Always; options.HeaderName = "X-XSRF-TOKEN"; });
 			services.AddAutoMapper();
-			// services.AddDbContext<VegaDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("SqliteConnection")));
-			services.AddDbContext<VegaDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection")));
+			services.AddDbContext<VegaDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("SqliteConnection")));
+			// services.AddDbContext<VegaDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection")));
 			services.AddMvc(options => { options.SslPort = 44322; options.Filters.Add(new RequireHttpsAttribute()); });
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			services.AddScoped<IVehicleRepository, VehicleRepository>();

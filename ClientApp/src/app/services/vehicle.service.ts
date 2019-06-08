@@ -1,6 +1,9 @@
+import { KeyValuePair } from './../models/keyValuePair';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SaveVehicle } from '../models/savevehicle';
+import { Observable } from 'rxjs';
+import { Vehicle } from '../models/vehicle';
 
 @Injectable({
     providedIn: 'root'
@@ -10,16 +13,16 @@ export class VehicleService {
 
     constructor(private http: HttpClient) { }
 
-    getMakes() {
-        return this.http.get('/api/makes');
+    getMakes(): Observable<KeyValuePair[]> {
+        return this.http.get<KeyValuePair[]>('/api/makes');
     }
 
     getFeatures() {
         return this.http.get('/api/features');
     }
 
-    getVehicles() {
-        return this.http.get('/api/vehicles/');
+    getVehicles(): Observable<Vehicle[]> {
+        return this.http.get<Vehicle[]>('/api/vehicles/');
     }
 
     getVehicle(id: number) {

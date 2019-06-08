@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +18,17 @@ namespace Vega.Data
 			this.context = context;
 		}
 
-		public async Task<IEnumerable<Vehicle>> GetVehicles(bool includeRelated = true)
+		public async Task<IEnumerable<Vehicle>> GetVehicles()
 		{
-			return await context.Vehicles.Include(v => v.Features).ThenInclude(vf => vf.Feature).Include(v => v.Model).ThenInclude(m => m.Make).AsNoTracking().ToListAsync();
+			return await context.Vehicles
+				.Include(v => v.Features)
+					.ThenInclude(vf => vf.Feature)
+				.Include(v => v.Model)
+					.ThenInclude(m => m.Make)
+				.OrderBy(o => o.Model.Make.Name)
+					.ThenBy(o => o.Model.Name)
+				.AsNoTracking()
+				.ToListAsync();
 		}
 
 		public async Task<Vehicle> GetVehicle(int id, bool includeRelated = true)
