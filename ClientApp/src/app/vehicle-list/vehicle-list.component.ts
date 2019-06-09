@@ -13,33 +13,27 @@ import { Vehicle } from '../models/vehicle';
 export class VehicleListComponent implements OnInit {
 
     vehicles: Vehicle[]
-    allVehicles: Vehicle[]
-
     makes: KeyValuePair[]
     filter: any = {}
 
     constructor(private service: VehicleService) { }
 
     ngOnInit() {
-        this.service.getMakes().subscribe(makes => {
-            this.makes = makes
-        })
-        this.service.getVehicles().subscribe(vehicles => this.vehicles = this.allVehicles = vehicles, error => { console.log("Problem!") });
+        this.service.getMakes().subscribe(makes => { this.makes = makes })
+        this.populateVehicles()
     }
 
     onFilterChange() {
-        let vehicles = this.allVehicles
-
-        if (this.filter.makeId) {
-            vehicles = vehicles.filter(v => v.make.id == this.filter.makeId)
-        }
-
-        this.vehicles = vehicles
+        this.populateVehicles()
     }
 
     resetFilters() {
         this.filter = {}
-        this.vehicles = this.allVehicles;
+        this.populateVehicles()
+    }
+
+    populateVehicles() {
+        return this.service.getVehicles(this.filter).subscribe(vehicles => this.vehicles = vehicles, error => { console.log("Problem!") });
     }
 
 }

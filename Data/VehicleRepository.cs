@@ -18,17 +18,23 @@ namespace Vega.Data
 			this.context = context;
 		}
 
-		public async Task<IEnumerable<Vehicle>> GetVehicles()
+		public async Task<IEnumerable<Vehicle>> GetVehicles(Filter filter)
 		{
-			return await context.Vehicles
+			var items = context.Vehicles
 				.Include(v => v.Features)
 					.ThenInclude(vf => vf.Feature)
 				.Include(v => v.Model)
 					.ThenInclude(m => m.Make)
 				.OrderBy(o => o.Model.Make.Name)
 					.ThenBy(o => o.Model.Name)
-				.AsNoTracking()
-				.ToListAsync();
+				.AsNoTracking();
+
+			if (filter.MakeId.HasValue)
+			{
+				items = items.Where(x => x.Model.MakeId == filter.MakeId.Value);
+			}
+
+			return await items.ToListAsync();
 		}
 
 		public async Task<Vehicle> GetVehicle(int id, bool includeRelated = true)
