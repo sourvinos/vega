@@ -29,12 +29,12 @@ namespace Vega.Controllers
 		// GET: api/vehicles
 		// GET: api/vehicles?makeId=5
 		[HttpGet]
-		public async Task<IEnumerable<VehicleResource>> Get(FilterResource filterResource)
+		public async Task<QueryResultResource<VehicleResource>> Get(FilterResource filterResource)
 		{
 			var filter = mapper.Map<FilterResource, Filter>(filterResource);
-			var items = await vehicleRepository.GetVehicles(filter);
+			var queryResult = await vehicleRepository.GetVehicles(filter);
 
-			return mapper.Map<IEnumerable<Vehicle>, IEnumerable<VehicleResource>>(items);
+			return mapper.Map<QueryResult<Vehicle>, QueryResultResource<VehicleResource>>(queryResult);
 		}
 
 		// GET: api/vehicles/1

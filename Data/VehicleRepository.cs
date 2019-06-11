@@ -18,8 +18,10 @@ namespace Vega.Data
 			this.context = context;
 		}
 
-		public async Task<IEnumerable<Vehicle>> GetVehicles(Filter filter)
+		public async Task<QueryResult<Vehicle>> GetVehicles(Filter filter)
 		{
+			var result = new QueryResult<Vehicle>();
+
 			var items = context.Vehicles
 				.Include(v => v.Features)
 					.ThenInclude(vf => vf.Feature)
@@ -34,7 +36,10 @@ namespace Vega.Data
 				items = items.Where(x => x.Model.MakeId == filter.MakeId.Value);
 			}
 
-			return await items.ToListAsync();
+			result.TotalItems = items.Count();
+			result.Items = await items.ToListAsync();
+
+			return result;
 		}
 
 		public async Task<Vehicle> GetVehicle(int id, bool includeRelated = true)
