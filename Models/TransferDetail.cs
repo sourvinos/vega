@@ -2,7 +2,7 @@ using System;
 
 namespace Vega.Models
 {
-	public class TransferViewModel
+	public class TransferDetail
 	{
 		public int Id { get; set; }
 		public DateTime DateIn { get; set; }

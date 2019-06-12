@@ -2,14 +2,12 @@ using System;
 
 namespace Vega.Models
 {
-	public class Transfer
+	public class Detail
 	{
 		public int Id { get; set; }
 		public DateTime DateIn { get; set; }
-		public int DestinationId { get; set; }
-		public int CustomerId { get; set; }
-		public int Persons { get; set; }
-
+		public Destination Destination { get; set; }
 		public Customer Customer { get; set; }
+		public int Persons { get; set; }
 	}
 }

@@ -25,18 +25,22 @@ namespace Vega.Controllers
 
 		// GET: api/transfers
 		[HttpGet]
-		public IEnumerable<TransferViewModel> Get()
+		public IEnumerable<TotalPersonsPerCustomer> Get()
 		{
-			var transfers = PopulateTransfers().Select(transfer => new TransferViewModel
-			{
-				Id = transfer.Id,
-				DateIn = transfer.DateIn,
-				Destination = PopulateDestinations().Where(b => b.Id == transfer.DestinationId).Select(s => new Destination { Id = s.Id, Name = s.Name }).FirstOrDefault(),
-				Customer = PopulateCustomers().Where(b => b.Id == transfer.CustomerId).Select(s => new Customer { Id = s.Id, Name = s.Name }).FirstOrDefault(),
-				Persons = transfer.Persons
-			});
+			var details = context.Transfers.Include(x => x.Customer);
 
-			return transfers;
+			var totalPersonsPerCustomer = context.Transfers
+				.Include(x => x.Customer)
+				.GroupBy(x => new { x.Customer.Name })
+				.Select(x => new TotalPersonsPerCustomer
+				{
+					Name = x.Key.Name,
+					Persons = x.Sum(s => s.Persons)
+				});
+
+
+
+			return totalPersonsPerCustomer;
 		}
 
 		public static List<Transfer> PopulateTransfers()
@@ -45,7 +49,7 @@ namespace Vega.Controllers
 			{
 				new Transfer { Id = 1, DateIn = DateTime.Parse("2018-05-01"), DestinationId = 1, CustomerId = 1, Persons = 10 },
 				new Transfer { Id = 2, DateIn = DateTime.Parse("2018-05-01"), DestinationId = 1, CustomerId = 1, Persons = 2 },
-				new Transfer { Id = 3, DateIn = DateTime.Parse("2018-05-02"), DestinationId = 2, CustomerId = 1, Persons = 3 },
+				new Transfer { Id = 3, DateIn = DateTime.Parse("2018-05-02"), DestinationId = 2, CustomerId = 2, Persons = 3 },
 				new Transfer { Id = 4, DateIn = DateTime.Parse("2018-05-02"), DestinationId = 2, CustomerId = 2, Persons = 4 },
 				new Transfer { Id = 5, DateIn = DateTime.Parse("2018-05-02"), DestinationId = 3, CustomerId = 3, Persons = 7 },
 			};
