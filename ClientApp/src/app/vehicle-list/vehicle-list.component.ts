@@ -1,8 +1,7 @@
+import { Vehicle } from './../models/vehicle';
 import { KeyValuePair } from './../models/keyValuePair';
 import { Component, OnInit } from '@angular/core';
 import { VehicleService } from '../services/vehicle.service';
-import { Vehicle } from '../models/vehicle';
-
 
 @Component({
     selector: 'app-vehicle-list',
@@ -12,9 +11,16 @@ import { Vehicle } from '../models/vehicle';
 
 export class VehicleListComponent implements OnInit {
 
+    displayModel: {
+        totalItems: number
+        items: Vehicle[]
+    }
+
+    filter: any = {}
     vehicles: Vehicle[]
     makes: KeyValuePair[]
-    filter: any = {}
+
+    queryResult: any = {}
 
     constructor(private service: VehicleService) { }
 
@@ -33,7 +39,10 @@ export class VehicleListComponent implements OnInit {
     }
 
     populateVehicles() {
-        return this.service.getVehicles(this.filter).subscribe(vehicles => this.vehicles = vehicles, error => { console.log("Problem!") });
+        return this.service.getVehicles(this.filter).subscribe(result => {
+            this.queryResult = result
+            console.log(this.queryResult)
+        })
     }
 
 }

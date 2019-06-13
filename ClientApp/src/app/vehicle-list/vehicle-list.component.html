@@ -12,8 +12,14 @@
 </div>
 
 <div id='main-body'>
+    <p>Total: {{ queryResult.totalVehicles }}</p>
     <ul>
-        <li *ngFor="let vehicle of vehicles">
+        <li *ngFor="let item of queryResult.totalVehiclesPerMake">
+            {{ item.name }} {{ item.vehicles }}
+        </li>
+    </ul>
+    <ul>
+        <li *ngFor="let vehicle of queryResult.items">
             {{ vehicle.make.name }}
             {{ vehicle.model.name }}
         </li>

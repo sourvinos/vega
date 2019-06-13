@@ -22,21 +22,24 @@ namespace Vega.Data
 		{
 			var result = new QueryResult<Vehicle>();
 
-			var items = context.Vehicles
-				.Include(v => v.Features)
-					.ThenInclude(vf => vf.Feature)
-				.Include(v => v.Model)
-					.ThenInclude(m => m.Make)
-				.OrderBy(o => o.Model.Make.Name)
-					.ThenBy(o => o.Model.Name)
-				.AsNoTracking();
+			var items = context.Vehicles.Include(v => v.Features).ThenInclude(vf => vf.Feature).Include(v => v.Model).ThenInclude(m => m.Make).OrderBy(o => o.Model.Make.Name).ThenBy(o => o.Model.Name).AsNoTracking();
+
+			var totalVehiclesPerMake = context.Vehicles
+				.Include(x => x.Model).ThenInclude(x => x.Make)
+				.GroupBy(x => new { x.Model.Make.Name })
+				.Select(x => new TotalVehiclesPerMake
+				{
+					Name = x.Key.Name,
+					Vehicles = x.Count()
+				});
 
 			if (filter.MakeId.HasValue)
 			{
 				items = items.Where(x => x.Model.MakeId == filter.MakeId.Value);
 			}
 
-			result.TotalItems = items.Count();
+			result.TotalVehicles = items.Count();
+			result.TotalVehiclesPerMake = await totalVehiclesPerMake.ToListAsync();
 			result.Items = await items.ToListAsync();
 
 			return result;
