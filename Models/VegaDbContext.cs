@@ -11,6 +11,7 @@ namespace Vega.Models
 		public DbSet<Feature> Features { get; set; }
 		public DbSet<Customer> Customers { get; set; }
 		public DbSet<Transfer> Transfers { get; set; }
+		public DbSet<Destination> Destinations { get; set; }
 
 		public VegaDbContext(DbContextOptions<VegaDbContext> options) : base(options) { }
 

@@ -25,9 +25,11 @@ namespace Vega.Controllers
 
 		// GET: api/transfers
 		[HttpGet]
-		public IEnumerable<TotalPersonsPerCustomer> Get()
+		public GroupResult<Transfer> Get()
 		{
-			var details = context.Transfers.Include(x => x.Customer);
+			var details = context.Transfers.Include(x => x.Customer).Include(x => x.Destination);
+
+			var groupResult = new GroupResult<Transfer>();
 
 			var totalPersonsPerCustomer = context.Transfers
 				.Include(x => x.Customer)
@@ -38,47 +40,20 @@ namespace Vega.Controllers
 					Persons = x.Sum(s => s.Persons)
 				});
 
+			var TotalPersonsPerDestination = context.Transfers
+				.Include(x => x.Destination)
+				.GroupBy(x => new { x.Destination.Name })
+				.Select(x => new TotalPersonsPerDestination
+				{
+					DestinationName = x.Key.Name,
+					Persons = x.Sum(s => s.Persons)
+				});
 
+			groupResult.Items = details.ToList();
+			groupResult.TotalPersonsPerCustomer = totalPersonsPerCustomer.ToList();
+			groupResult.TotalPersonsPerDestination = TotalPersonsPerDestination.ToList();
 
-			return totalPersonsPerCustomer;
-		}
-
-		public static List<Transfer> PopulateTransfers()
-		{
-			List<Transfer> TransferCollection = new List<Transfer>
-			{
-				new Transfer { Id = 1, DateIn = DateTime.Parse("2018-05-01"), DestinationId = 1, CustomerId = 1, Persons = 10 },
-				new Transfer { Id = 2, DateIn = DateTime.Parse("2018-05-01"), DestinationId = 1, CustomerId = 1, Persons = 2 },
-				new Transfer { Id = 3, DateIn = DateTime.Parse("2018-05-02"), DestinationId = 2, CustomerId = 2, Persons = 3 },
-				new Transfer { Id = 4, DateIn = DateTime.Parse("2018-05-02"), DestinationId = 2, CustomerId = 2, Persons = 4 },
-				new Transfer { Id = 5, DateIn = DateTime.Parse("2018-05-02"), DestinationId = 3, CustomerId = 3, Persons = 7 },
-			};
-
-			return TransferCollection;
-		}
-
-		public static List<Destination> PopulateDestinations()
-		{
-			List<Destination> DestinationCollection = new List<Destination>
-			{
-				new Destination { Id = 1, Name = "Paxos" },
-				new Destination { Id = 2, Name = "Blue lagoon" },
-				new Destination { Id = 3, Name = "Corfu Town Shopping" }
-			};
-
-			return DestinationCollection;
-		}
-
-		public static List<Customer> PopulateCustomers()
-		{
-			List<Customer> CustomerCollection = new List<Customer>
-			{
-				new Customer { Id = 1, Name = "TUI" },
-				new Customer { Id = 2, Name = "Hellenic" },
-				new Customer { Id = 3, Name = "TravelCo" }
-			};
-
-			return CustomerCollection;
+			return groupResult;
 		}
 
 	}

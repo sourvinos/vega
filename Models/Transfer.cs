@@ -11,5 +11,6 @@ namespace Vega.Models
 		public int Persons { get; set; }
 
 		public Customer Customer { get; set; }
+		public Destination Destination { get; set; }
 	}
 }
